@@ -9,7 +9,7 @@ import { TransactionItem } from "./entities/TransactionItem.js";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DATABASE_URL,
+  url: process.env.DATABASE_URL ?? "postresql://postgres:postgres@localhost:5432/brevstar_pos",
   synchronize: false,
   logging: false,
   entities: [
