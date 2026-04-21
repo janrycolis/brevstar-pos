@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Typography, Button, Box, Snackbar, Alert } from "@mui/material";
+import { Typography, Button, Box, Snackbar, Alert, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import type { Staff, StaffFormData } from "../types/Staff";
 import {
@@ -61,33 +61,58 @@ export default function StaffPage() {
     try {
       if (editing) {
         await updateStaff(editing.id, data);
-        showSnackbar("Staff member updated", "success");
+        showSnackbar("Employee updated", "success");
       } else {
         await createStaff(data);
-        showSnackbar("Staff member created", "success");
+        showSnackbar("Employee created", "success");
       }
       setFormOpen(false);
       loadStaff();
     } catch {
-      showSnackbar("Failed to save staff member", "error");
+      showSnackbar("Failed to save employee", "error");
     }
   };
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography variant="h4">Staff</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
-          Add Staff
-        </Button>
+      <Box mb={3}>
+        <Typography variant="h4">Employee Management</Typography>
+        <Typography variant="body2" color="text.secondary" mt={0.5}>
+          Manage your team members and their access levels.
+        </Typography>
       </Box>
 
-      <StaffTable staff={staff} onEdit={handleEdit} onDelete={handleDelete} />
+      <Paper
+        sx={{
+          borderRadius: "14px",
+          border: "1px solid rgba(0,0,0,0.06)",
+          overflow: "hidden",
+          bgcolor: "#fff",
+        }}
+      >
+        <Box
+          sx={{
+            px: 3,
+            py: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {staff.length} {staff.length === 1 ? "employee" : "employees"}
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+          >
+            Add Employee
+          </Button>
+        </Box>
+        <StaffTable staff={staff} onEdit={handleEdit} onDelete={handleDelete} />
+      </Paper>
 
       <StaffForm
         open={formOpen}

@@ -5,7 +5,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   IconButton,
   Chip,
   Tooltip,
@@ -22,15 +21,15 @@ interface Props {
 
 export default function ProductTable({ products, onEdit, onDelete }: Props) {
   return (
-    <TableContainer component={Paper} variant="outlined">
+    <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>SKU</TableCell>
             <TableCell>Category</TableCell>
+            <TableCell>Type</TableCell>
             <TableCell align="right">Price</TableCell>
-            <TableCell align="right">Cost</TableCell>
             <TableCell align="right">Qty</TableCell>
             <TableCell align="center">Status</TableCell>
             <TableCell align="center">Actions</TableCell>
@@ -39,7 +38,7 @@ export default function ProductTable({ products, onEdit, onDelete }: Props) {
         <TableBody>
           {products.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+              <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                 No products found. Add your first product to get started.
               </TableCell>
             </TableRow>
@@ -48,14 +47,23 @@ export default function ProductTable({ products, onEdit, onDelete }: Props) {
             <TableRow key={product.id} hover>
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.sku}</TableCell>
-              <TableCell>{product.category ?? "—"}</TableCell>
-              <TableCell align="right">
-                ${Number(product.price).toFixed(2)}
+              <TableCell>
+                {product.category?.name ?? "—"}
+                {product.subCategory ? ` / ${product.subCategory.name}` : ""}
+              </TableCell>
+              <TableCell>
+                <Chip
+                  label={product.type === "service" ? "Service" : "Item"}
+                  size="small"
+                  variant="outlined"
+                />
               </TableCell>
               <TableCell align="right">
-                ${Number(product.cost).toFixed(2)}
+                ₱{Number(product.price).toFixed(2)}
               </TableCell>
-              <TableCell align="right">{product.quantity}</TableCell>
+              <TableCell align="right">
+                {product.type === "item" ? product.quantity : "—"}
+              </TableCell>
               <TableCell align="center">
                 <Chip
                   label={product.isActive ? "Active" : "Inactive"}

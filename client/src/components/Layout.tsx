@@ -2,15 +2,12 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Drawer,
-  AppBar,
-  Toolbar,
   Typography,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   IconButton,
-  Divider,
   Avatar,
   Tooltip,
 } from "@mui/material";
@@ -19,18 +16,41 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useAuth } from "../context/AuthContext";
 
-const DRAWER_WIDTH = 240;
+const DRAWER_WIDTH = 220;
 
 const navItems = [
-  { label: "Dashboard", path: "/", icon: <DashboardIcon /> },
-  { label: "Products", path: "/products", icon: <InventoryIcon /> },
   {
-    label: "Staff",
-    path: "/staff",
-    icon: <PeopleIcon />,
+    label: "Dashboard",
+    path: "/",
+    icon: <DashboardIcon fontSize="small" />,
     adminOnly: true,
+  },
+  {
+    label: "Inventory Tracking",
+    path: "/products",
+    icon: <InventoryIcon fontSize="small" />,
+    adminOnly: true,
+  },
+  {
+    label: "Employee Management",
+    path: "/staff",
+    icon: <PeopleIcon fontSize="small" />,
+    adminOnly: true,
+  },
+  {
+    label: "Point of Sale",
+    path: "/pos",
+    icon: <PointOfSaleIcon fontSize="small" />,
+    roles: ["cashier", "manager"] as string[],
+  },
+  {
+    label: "Transactions",
+    path: "/transactions",
+    icon: <ReceiptLongIcon fontSize="small" />,
+    roles: ["admin", "manager"] as string[],
   },
 ];
 
@@ -55,92 +75,136 @@ export default function Layout() {
           "& .MuiDrawer-paper": {
             width: DRAWER_WIDTH,
             boxSizing: "border-box",
-            bgcolor: "#1a237e",
+            bgcolor: "#1a0f3c",
             color: "#fff",
+            display: "flex",
+            flexDirection: "column",
           },
         }}
       >
-        <Toolbar
+        <Box
           sx={{
-            gap: 1,
-            px: 2,
+            px: 2.5,
+            py: 2.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
           }}
         >
-          <PointOfSaleIcon sx={{ fontSize: 28 }} />
-          <Typography variant="h6" noWrap fontWeight={700}>
+          <Box
+            sx={{
+              width: 30,
+              height: 30,
+              bgcolor: "#7c3aed",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <PointOfSaleIcon sx={{ fontSize: 16, color: "#fff" }} />
+          </Box>
+          <Typography
+            fontWeight={700}
+            noWrap
+            sx={{ fontSize: "0.95rem", color: "#fff" }}
+          >
             Brevstar POS
           </Typography>
-        </Toolbar>
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.12)" }} />
+        </Box>
 
-        <List sx={{ px: 1, mt: 1 }}>
+        <List sx={{ px: 1.5, mt: 0.5, flex: 1 }}>
           {navItems
-            .filter((item) => !item.adminOnly || staff?.role === "admin")
+            .filter(
+              (item) =>
+                (!item.adminOnly || staff?.role === "admin") &&
+                (!item.roles || item.roles.includes(staff?.role ?? "")),
+            )
             .map((item) => (
               <ListItemButton
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 selected={isActive(item.path)}
                 sx={{
-                  borderRadius: 2,
+                  borderRadius: "10px",
                   mb: 0.5,
-                  color: "rgba(255,255,255,0.7)",
+                  py: 1,
+                  color: "rgba(255,255,255,0.5)",
                   "&.Mui-selected": {
                     bgcolor: "rgba(255,255,255,0.12)",
                     color: "#fff",
                     "& .MuiListItemIcon-root": { color: "#fff" },
                   },
+                  "&.Mui-selected:hover": {
+                    bgcolor: "rgba(255,255,255,0.15)",
+                  },
                   "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.08)",
+                    bgcolor: "rgba(255,255,255,0.07)",
+                    color: "#fff",
+                    "& .MuiListItemIcon-root": { color: "#fff" },
                   },
                 }}
               >
-                <ListItemIcon
-                  sx={{ color: "rgba(255,255,255,0.7)", minWidth: 40 }}
-                >
+                <ListItemIcon sx={{ color: "inherit", minWidth: 36 }}>
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.label} />
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: "0.875rem",
+                    fontWeight: isActive(item.path) ? 600 : 400,
+                  }}
+                />
               </ListItemButton>
             ))}
         </List>
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* Staff info at bottom */}
-        <Box sx={{ p: 2 }}>
-          <Divider sx={{ borderColor: "rgba(255,255,255,0.12)", mb: 2 }} />
-          <Box display="flex" alignItems="center" gap={1}>
+        {/* Bottom user row */}
+        <Box sx={{ px: 1.5, pb: 2.5 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              px: 1.5,
+              py: 1,
+              borderRadius: "10px",
+              bgcolor: "rgba(255,255,255,0.06)",
+            }}
+          >
             <Avatar
               sx={{
-                width: 32,
-                height: 32,
-                bgcolor: "#f57c00",
-                fontSize: 14,
+                width: 28,
+                height: 28,
+                bgcolor: "#7c3aed",
+                fontSize: 11,
+                fontWeight: 700,
+                borderRadius: "6px",
+                flexShrink: 0,
               }}
             >
               {staff?.firstName?.[0]}
               {staff?.lastName?.[0]}
             </Avatar>
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography
-                variant="body2"
-                noWrap
-                sx={{ color: "#fff", fontWeight: 600 }}
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{ color: "rgba(255,255,255,0.6)", flex: 1 }}
+            >
+              {staff?.email}
+            </Typography>
+            <Tooltip title="Logout">
+              <IconButton
+                size="small"
+                onClick={logout}
+                sx={{ color: "rgba(255,255,255,0.5)", p: 0.5 }}
               >
-                {staff?.firstName} {staff?.lastName}
-              </Typography>
-              <Typography
-                variant="caption"
-                noWrap
-                sx={{
-                  color: "rgba(255,255,255,0.5)",
-                  textTransform: "capitalize",
-                }}
-              >
-                {staff?.role}
-              </Typography>
-            </Box>
+                <LogoutIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
       </Drawer>
@@ -150,33 +214,12 @@ export default function Layout() {
         component="main"
         sx={{
           flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
           bgcolor: "background.default",
+          minHeight: "100vh",
+          p: 4,
         }}
       >
-        <AppBar
-          position="sticky"
-          elevation={0}
-          sx={{
-            bgcolor: "#fff",
-            color: "text.primary",
-            borderBottom: "1px solid",
-            borderColor: "divider",
-          }}
-        >
-          <Toolbar sx={{ justifyContent: "flex-end" }}>
-            <Tooltip title="Logout">
-              <IconButton onClick={logout} color="inherit">
-                <LogoutIcon />
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
-
-        <Box sx={{ p: 3, flex: 1 }}>
-          <Outlet />
-        </Box>
+        <Outlet />
       </Box>
     </Box>
   );

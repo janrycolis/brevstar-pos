@@ -4,7 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
+import { Category } from "./Category.js";
+import { SubCategory } from "./SubCategory.js";
 
 @Entity("products")
 export class Product {
@@ -26,14 +30,31 @@ export class Product {
   @Column({ type: "decimal", precision: 10, scale: 2 })
   price!: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  cost!: number;
+  @Column({ type: "varchar", length: 20, default: "'item'" })
+  type!: "item" | "service";
 
   @Column({ type: "int", default: 0 })
   quantity!: number;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  category!: string | null;
+  @ManyToOne(() => Category, (cat) => cat.products, {
+    nullable: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn({ name: "categoryId" })
+  category!: Category | null;
+
+  @Column({ type: "uuid", nullable: true })
+  categoryId!: string | null;
+
+  @ManyToOne(() => SubCategory, (sub) => sub.products, {
+    nullable: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn({ name: "subCategoryId" })
+  subCategory!: SubCategory | null;
+
+  @Column({ type: "uuid", nullable: true })
+  subCategoryId!: string | null;
 
   @Column({ type: "boolean", default: true })
   isActive!: boolean;

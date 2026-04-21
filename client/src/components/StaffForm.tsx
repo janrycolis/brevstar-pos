@@ -18,7 +18,6 @@ const emptyForm: StaffFormData = {
   lastName: "",
   email: "",
   password: "",
-  pin: null,
   role: "cashier",
   isActive: true,
 };
@@ -38,7 +37,6 @@ export default function StaffForm({ open, staff, onClose, onSave }: Props) {
           lastName: staff.lastName,
           email: staff.email,
           password: "",
-          pin: staff.pin,
           role: staff.role,
           isActive: staff.isActive,
         }
@@ -66,7 +64,7 @@ export default function StaffForm({ open, staff, onClose, onSave }: Props) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{staff ? "Edit Staff" : "New Staff Member"}</DialogTitle>
+      <DialogTitle>{staff ? "Edit Employee" : "New Employee"}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid size={{ xs: 6 }}>
@@ -105,15 +103,6 @@ export default function StaffForm({ open, staff, onClose, onSave }: Props) {
               required={!staff}
               value={form.password}
               onChange={handleChange("password")}
-            />
-          </Grid>
-          <Grid size={{ xs: 6 }}>
-            <TextField
-              label="PIN (4 digits)"
-              fullWidth
-              value={form.pin ?? ""}
-              onChange={handleChange("pin")}
-              slotProps={{ htmlInput: { maxLength: 4 } }}
             />
           </Grid>
           <Grid size={{ xs: 6 }}>

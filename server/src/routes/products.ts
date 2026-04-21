@@ -7,13 +7,19 @@ const repo = () => AppDataSource.getRepository(Product);
 
 // List all products
 router.get("/", async (_req, res) => {
-  const products = await repo().find({ order: { name: "ASC" } });
+  const products = await repo().find({
+    relations: ["category", "subCategory"],
+    order: { name: "ASC" },
+  });
   res.json(products);
 });
 
 // Get single product
 router.get("/:id", async (req, res) => {
-  const product = await repo().findOneBy({ id: req.params.id });
+  const product = await repo().findOne({
+    where: { id: req.params.id },
+    relations: ["category", "subCategory"],
+  });
   if (!product) {
     res.status(404).json({ error: "Product not found" });
     return;

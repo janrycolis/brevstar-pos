@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Typography, Button, Box, Snackbar, Alert } from "@mui/material";
+import { Typography, Button, Box, Snackbar, Alert, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import type { Product, ProductFormData } from "../types/Product";
 import {
@@ -10,6 +10,7 @@ import {
 } from "../api/products";
 import ProductTable from "../components/ProductTable";
 import ProductForm from "../components/ProductForm";
+import CategoryManager from "../components/CategoryManager";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -33,9 +34,12 @@ export default function ProductsPage() {
     loadProducts();
   }, [loadProducts]);
 
-  const showSnackbar = (message: string, severity: "success" | "error") => {
-    setSnackbar({ open: true, message, severity });
-  };
+  const showSnackbar = useCallback(
+    (message: string, severity: "success" | "error") => {
+      setSnackbar({ open: true, message, severity });
+    },
+    [],
+  );
 
   const handleAdd = () => {
     setEditing(null);
@@ -75,23 +79,60 @@ export default function ProductsPage() {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography variant="h4">Products</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
-          Add Product
-        </Button>
+      <Box mb={3}>
+        <Typography variant="h4">Inventory Tracking</Typography>
+        <Typography variant="body2" color="text.secondary" mt={0.5}>
+          Manage and track your product inventory.
+        </Typography>
       </Box>
 
-      <ProductTable
-        products={products}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <Paper
+        sx={{
+          borderRadius: "14px",
+          border: "1px solid rgba(0,0,0,0.06)",
+          overflow: "hidden",
+          bgcolor: "#fff",
+        }}
+      >
+        <Box
+          sx={{
+            px: 3,
+            py: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {products.length} {products.length === 1 ? "product" : "products"}
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+          >
+            Add Product
+          </Button>
+        </Box>
+        <ProductTable
+          products={products}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      </Paper>
+
+      <Paper
+        sx={{
+          borderRadius: "14px",
+          border: "1px solid rgba(0,0,0,0.06)",
+          overflow: "hidden",
+          bgcolor: "#fff",
+          mt: 3,
+        }}
+      >
+        <CategoryManager onSnackbar={showSnackbar} />
+      </Paper>
 
       <ProductForm
         open={formOpen}

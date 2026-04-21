@@ -12,6 +12,8 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProductsPage from "./pages/ProductsPage";
 import StaffPage from "./pages/StaffPage";
+import POSPage from "./pages/POSPage";
+import TransactionsPage from "./pages/TransactionsPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { staff, loading } = useAuth();
@@ -39,6 +41,18 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function NonCashierRoute({ children }: { children: React.ReactNode }) {
+  const { staff } = useAuth();
+  if (staff?.role === "cashier") return <Navigate to="/pos" replace />;
+  return <>{children}</>;
+}
+
+function NonAdminRoute({ children }: { children: React.ReactNode }) {
+  const { staff } = useAuth();
+  if (staff?.role === "admin") return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function AppRoutes() {
   const { staff, loading } = useAuth();
 
@@ -59,7 +73,13 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={staff ? <Navigate to="/" replace /> : <LoginPage />}
+        element={
+          staff ? (
+            <Navigate to={staff.role === "admin" ? "/" : "/pos"} replace />
+          ) : (
+            <LoginPage />
+          )
+        }
       />
       <Route
         element={
@@ -68,8 +88,22 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/products" element={<ProductsPage />} />
+        <Route
+          path="/"
+          element={
+            <AdminRoute>
+              <DashboardPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <AdminRoute>
+              <ProductsPage />
+            </AdminRoute>
+          }
+        />
         <Route
           path="/staff"
           element={
@@ -78,8 +112,29 @@ function AppRoutes() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/pos"
+          element={
+            <NonAdminRoute>
+              <POSPage />
+            </NonAdminRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <NonCashierRoute>
+              <TransactionsPage />
+            </NonCashierRoute>
+          }
+        />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route
+        path="*"
+        element={
+          <Navigate to={staff?.role === "admin" ? "/" : "/pos"} replace />
+        }
+      />
     </Routes>
   );
 }

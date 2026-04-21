@@ -1,3 +1,5 @@
+import type { Category, SubCategory } from "./Category";
+
 export interface Product {
   id: string;
   name: string;
@@ -5,12 +7,18 @@ export interface Product {
   sku: string;
   barcode: string | null;
   price: number;
-  cost: number;
+  type: "item" | "service";
   quantity: number;
-  category: string | null;
+  categoryId: string | null;
+  subCategoryId: string | null;
+  category?: Category | null;
+  subCategory?: SubCategory | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export type ProductFormData = Omit<Product, "id" | "createdAt" | "updatedAt">;
+export type ProductFormData = Omit<
+  Product,
+  "id" | "createdAt" | "updatedAt" | "category" | "subCategory"
+>;

@@ -5,7 +5,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   IconButton,
   Chip,
   Tooltip,
@@ -28,7 +27,7 @@ interface Props {
 
 export default function StaffTable({ staff, onEdit, onDelete }: Props) {
   return (
-    <TableContainer component={Paper} variant="outlined">
+    <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -43,7 +42,7 @@ export default function StaffTable({ staff, onEdit, onDelete }: Props) {
           {staff.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-                No staff members found.
+                No employees found.
               </TableCell>
             </TableRow>
           )}

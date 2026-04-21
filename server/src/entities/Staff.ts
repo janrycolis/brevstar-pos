@@ -29,9 +29,6 @@ export class Staff {
   @Column({ type: "varchar", length: 255 })
   passwordHash!: string;
 
-  @Column({ type: "varchar", length: 4, nullable: true })
-  pin!: string | null;
-
   @Column({ type: "enum", enum: StaffRole, default: StaffRole.CASHIER })
   role!: StaffRole;
 

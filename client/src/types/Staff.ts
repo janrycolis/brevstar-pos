@@ -3,7 +3,6 @@ export interface Staff {
   firstName: string;
   lastName: string;
   email: string;
-  pin: string | null;
   role: "admin" | "manager" | "cashier";
   isActive: boolean;
   createdAt: string;
@@ -15,7 +14,6 @@ export interface StaffFormData {
   lastName: string;
   email: string;
   password: string;
-  pin: string | null;
   role: "admin" | "manager" | "cashier";
   isActive: boolean;
 }
