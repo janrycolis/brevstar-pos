@@ -1,1 +1,1 @@
-brevstar pos capstonez
+brevstar pos capstone
