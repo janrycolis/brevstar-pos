@@ -194,7 +194,7 @@ export default function Layout() {
               noWrap
               sx={{ color: "rgba(255,255,255,0.6)", flex: 1 }}
             >
-              {staff?.email}
+              {staff?.email?.split("@")[0]}
             </Typography>
             <Tooltip title="Logout">
               <IconButton
