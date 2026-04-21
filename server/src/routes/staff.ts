@@ -1,9 +1,10 @@
 import { Router } from "express";
+import type { Router as ExpressRouter } from "express";
 import bcrypt from "bcryptjs";
 import { AppDataSource } from "../data-source.js";
 import { Staff } from "../entities/Staff.js";
 
-export const router = Router();
+export const router: ExpressRouter = Router();
 const repo = () => AppDataSource.getRepository(Staff);
 
 function sanitize(staff: Staff) {
@@ -37,8 +38,9 @@ router.post("/", async (req, res) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const staff = repo().create({ ...rest, passwordHash });
-  const saved = await repo().save(staff);
+  const staff = repo().create();
+  Object.assign(staff, rest, { passwordHash });
+  const saved: Staff = await repo().save(staff);
   res.status(201).json(sanitize(saved));
 });
 

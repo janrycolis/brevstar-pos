@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { IRouter, Router } from "express";
 import bcrypt from "bcryptjs";
 import { AppDataSource } from "../data-source.js";
 import { Staff } from "../entities/Staff.js";
 import { signToken, requireAuth } from "../middleware/auth.js";
 
-export const router = Router();
+export const router: IRouter = Router();
 const repo = () => AppDataSource.getRepository(Staff);
 
 function sanitize(staff: Staff) {
